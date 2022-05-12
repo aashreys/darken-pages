@@ -1,0 +1,38 @@
+{
+  "dependencies": {
+    "@create-figma-plugin/utilities": "^1.9.2"
+  },
+  "devDependencies": {
+    "@create-figma-plugin/build": "^1.9.2",
+    "@create-figma-plugin/tsconfig": "^1.9.2",
+    "@figma/plugin-typings": "1.45.0",
+    "typescript": "^4"
+  },
+  "scripts": {
+    "build": "build-figma-plugin --typecheck --minify",
+    "watch": "build-figma-plugin --typecheck --watch"
+  },
+  "figma-plugin": {
+    "editorType": [
+      "figma"
+    ],
+    "id": "hello-world",
+    "name": "Darken Pages",
+    "menu": [
+      {
+        "name": "Darken Pages",
+        "main": {
+          "src": "src/main.ts",
+          "handler": "darkenPages"
+        }
+      },
+      {
+        "name": "Lighten Pages",
+        "main": {
+          "src": "src/main.ts",
+          "handler": "lightenPages"
+        }
+      }
+    ]
+  }
+}
