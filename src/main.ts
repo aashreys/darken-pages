@@ -1,10 +1,5 @@
 import { convertHexColorToRgbColor } from "@create-figma-plugin/utilities"
 
-export default function () {
-  changeAllPageColors('222222')
-  figma.closePlugin('Darken all the pages!')
-}
-
 export function darkenPages() {
   changeAllPageColors('222222')
   figma.closePlugin('🎉')
@@ -24,5 +19,4 @@ function changeAllPageColors(hexColor: string) {
   for (let page of pages) {
     page.backgrounds = [backgroundPaint]
   }
-  
 }
