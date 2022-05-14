@@ -20,17 +20,32 @@
     "name": "Darken Pages",
     "menu": [
       {
-        "name": "Darken Pages",
+        "name": "Darken all pages",
         "main": {
           "src": "src/main.ts",
-          "handler": "darkenPages"
+          "handler": "darkenAllPages"
         }
       },
       {
-        "name": "Lighten Pages",
+        "name": "Lighten all pages",
         "main": {
           "src": "src/main.ts",
-          "handler": "lightenPages"
+          "handler": "lightenAllPages"
+        }
+      },
+      "-",
+      {
+        "name": "Darken current page",
+        "main": {
+          "src": "src/main.ts",
+          "handler": "darkenCurrentPage"
+        }
+      },
+      {
+        "name": "Lighten current page",
+        "main": {
+          "src": "src/main.ts",
+          "handler": "lightenCurrentPage"
         }
       }
     ]
