@@ -38,9 +38,6 @@ function createFillSettings() {
     }
   
     function saveFills(darkHexColor: string, darkOpacity: string, lightHexColor: string, lightOpacity: string) {
-      console.log(`Dark Fill: ${darkHexColor} : ${darkOpacity}`)
-      console.log(`Light Fill: ${lightHexColor} : ${lightOpacity}`)
-
       if (darkOpacity.replace('%', '').length === 0) darkOpacity = '0%'
       if (lightOpacity.replace('%', '').length === 0) lightOpacity = '0%'
       let fills: FillModel = {
