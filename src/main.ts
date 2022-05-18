@@ -12,6 +12,10 @@ const fillStore = new ClientStorageFillStore()
 
 let fills: FillModel
 
+let currentPagePaint: Paint
+
+let previewHandler: NotificationHandler
+
 export function darkenPages() {
   initializePlugin().then(() => {
     changeAllPageColors(fills.darkFill)
@@ -74,6 +78,9 @@ async function initializeFills() {
 function startEventListeners() {
   on(Events.ON_FILLS_CHANGED, onFillsChanged)
   on(Events.ON_FILLS_RESET, onFillsReset)
+  on(Events.ON_PREVIEW_START, onPreviewStart)
+  on(Events.ON_PREVIEW_UPDATE, onPreviewUpdate)
+  on(Events.ON_PREVIEW_END, onPreviewEnd)
 }
 
 function changeCurrentPageColor(fill: Fill) {
@@ -102,4 +109,22 @@ function onFillsChanged(fills: FillModel) {
 
 function onFillsReset() {
   fillStore.clearFills()
+}
+
+function getCurrentPagePaint(): Paint {
+  return figma.currentPage.backgrounds[0]
+}
+
+function onPreviewStart() {
+  previewHandler = figma.notify('👀 Previewing page color...', {timeout: Infinity})
+  currentPagePaint = getCurrentPagePaint()
+}
+
+function onPreviewUpdate(fill: Fill) {
+  changeCurrentPageColor(fill)
+}
+
+function onPreviewEnd() {
+  previewHandler.cancel()
+  figma.currentPage.backgrounds = [currentPagePaint]
 }

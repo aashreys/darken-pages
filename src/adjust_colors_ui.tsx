@@ -1,8 +1,8 @@
 import { render, Text, TextboxColor } from "@create-figma-plugin/ui"
 import { h, JSX } from "preact"
-import { FillModel } from "./fill_model"
+import { Fill, FillModel } from "./fill_model"
 import { useState } from 'preact/hooks'
-import { emit } from "@create-figma-plugin/utilities"
+import { emit, ensureMinimumTime } from "@create-figma-plugin/utilities"
 import { Events } from "./events"
 
 function createFillSettings() {
@@ -16,35 +16,42 @@ function createFillSettings() {
     function onDarkHexColorChange(event: JSX.TargetedEvent<HTMLInputElement>) {
       const newValue = event.currentTarget.value
       setDarkHexColor(newValue)
+      emitPreviewUpdate(newValue, darkOpacity)
       saveFills(newValue, darkOpacity, lightHexColor, lightOpacity)
     }
   
     function onDarkOpacityChange(event: JSX.TargetedEvent<HTMLInputElement>) {
       const newValue = event.currentTarget.value
       setDarkOpacity(newValue)
+      emitPreviewUpdate(darkHexColor, newValue)
       saveFills(darkHexColor, newValue, lightHexColor, lightOpacity)
     }
   
     function onLightHexColorChange(event: JSX.TargetedEvent<HTMLInputElement>) {
       const newValue = event.currentTarget.value
       setLightHexColor(newValue)
+      emitPreviewUpdate(newValue, lightOpacity)
       saveFills(darkHexColor, darkOpacity, newValue, lightOpacity)
     }
   
     function onLightOpacityChange(event: JSX.TargetedEvent<HTMLInputElement>) {
       const newValue = event.currentTarget.value
       setLightOpacity(newValue)
+      emitPreviewUpdate(lightHexColor, newValue)
       saveFills(darkHexColor, darkOpacity, lightHexColor, newValue)
     }
   
     function saveFills(darkHexColor: string, darkOpacity: string, lightHexColor: string, lightOpacity: string) {
-      if (darkOpacity.replace('%', '').length === 0) darkOpacity = '0%'
-      if (lightOpacity.replace('%', '').length === 0) lightOpacity = '0%'
       let fills: FillModel = {
-        darkFill: { hex: darkHexColor, opacity: parseInt(darkOpacity)},
-        lightFill: { hex: lightHexColor, opacity: parseInt(lightOpacity)}
+        darkFill: { hex: darkHexColor, opacity: opacityStringToNumber(darkOpacity)},
+        lightFill: { hex: lightHexColor, opacity: opacityStringToNumber(lightOpacity)}
       }
       props.onFillsChanged(fills)
+    }
+
+    function opacityStringToNumber(opacity: string): number {
+      if (opacity.replace('%', '').length === 0) opacity = '0%'
+      return parseInt(opacity)
     }
 
     function onResetClicked() {
@@ -54,11 +61,28 @@ function createFillSettings() {
       setLightOpacity(props.defaultFills.lightFill.opacity + '%')
       props.onResetClicked()
     }
+
+    function onFocusCapture() {
+      emit(Events.ON_PREVIEW_START)
+    }
+
+    function onBlurCapture() {
+      emit(Events.ON_PREVIEW_END)
+    }
+
+    function emitPreviewUpdate(hex: string, opacity: string) {
+      emit(Events.ON_PREVIEW_UPDATE, {
+        hex: hex,
+        opacity: opacityStringToNumber(opacity)
+      })
+    }
   
     return (
       <div style="padding-left: 16px; padding-top: 12px; padding-bottom: 12px; padding-right: 8px">
   
-      <div style="display: flex; align-items: center;">
+      <div style="display: flex; align-items: center;" 
+      onFocusCapture={onFocusCapture} 
+      onBlurCapture={onBlurCapture}>
   
         <Text style={'width: 35%'}>Dark Fill</Text>
   
@@ -73,7 +97,9 @@ function createFillSettings() {
   
       </div>
   
-      <div style="display: flex; align-items: center; margin-top: 6px;">
+      <div style="display: flex; align-items: center; margin-top: 6px;" 
+      onFocusCapture={onFocusCapture} 
+      onBlurCapture={onBlurCapture}>
   
         <Text style={'width: 35%'}>Light Fill</Text>
   

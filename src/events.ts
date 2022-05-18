@@ -2,5 +2,8 @@ export class Events {
 
   static ON_FILLS_CHANGED = 'ON_FILLS_CHANGED'
   static ON_FILLS_RESET = 'ON_FILLS_RESET'
+  static ON_PREVIEW_START = 'ON_PREVIEW_START'
+  static ON_PREVIEW_UPDATE = 'ON_PREVIEW_UPDATE'
+  static ON_PREVIEW_END = 'ON_PREVIEW_END'
 
 }
