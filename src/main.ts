@@ -1,4 +1,4 @@
-import { convertHexColorToRgbColor, on, setRelaunchButton, showUI } from "@create-figma-plugin/utilities"
+import { convertHexColorToRgbColor, isValidHexColor, on, setRelaunchButton, showUI } from "@create-figma-plugin/utilities"
 import { Events } from "./events"
 import { Fill, FillModel } from "./fill_model"
 import { ClientStorageFillStore } from "./fill_store"
@@ -121,7 +121,9 @@ function onPreviewStart() {
 }
 
 function onPreviewUpdate(fill: Fill) {
-  changeCurrentPageColor(fill)
+  if (isValidHexColor(fill.hex)) {
+    changeCurrentPageColor(fill)
+  }
 }
 
 function onPreviewEnd() {
