@@ -22,17 +22,17 @@
     "name": "Darken Pages",
     "menu": [
       {
-        "name": "Darken all pages",
+        "name": "Darken pages",
         "main": {
           "src": "src/main.ts",
-          "handler": "darkenAllPages"
+          "handler": "darkenPages"
         }
       },
       {
-        "name": "Lighten all pages",
+        "name": "Lighten pages",
         "main": {
           "src": "src/main.ts",
-          "handler": "lightenAllPages"
+          "handler": "lightenPages"
         }
       },
       "-",
@@ -44,6 +44,22 @@
           "handler": "adjustColors"
         }
       }
-    ]
+    ],
+    "relaunchButtons": {
+      "darkenPages": {
+        "name": "Darken pages",
+        "main": {
+          "src": "src/main.ts",
+          "handler": "darkenPages"
+        }
+      },
+      "lightenPages": {
+        "name": "Lighten pages",
+        "main": {
+          "src": "src/main.ts",
+          "handler": "lightenPages"
+        }
+      }
+    }
   }
 }

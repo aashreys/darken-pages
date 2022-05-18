@@ -1,4 +1,4 @@
-import { convertHexColorToRgbColor, emit, on, showUI } from "@create-figma-plugin/utilities"
+import { convertHexColorToRgbColor, on, setRelaunchButton, showUI } from "@create-figma-plugin/utilities"
 import { Events } from "./events"
 import { Fill, FillModel } from "./fill_model"
 import { ClientStorageFillStore } from "./fill_store"
@@ -12,14 +12,14 @@ const fillStore = new ClientStorageFillStore()
 
 let fills: FillModel
 
-export function darkenAllPages() {
+export function darkenPages() {
   initializePlugin().then(() => {
     changeAllPageColors(fills.darkFill)
     figma.closePlugin('🎉')
   }) 
 }
 
-export function lightenAllPages() {
+export function lightenPages() {
   initializePlugin().then(() => {
     changeAllPageColors(fills.lightFill)
     figma.closePlugin('🎉')
@@ -42,6 +42,7 @@ export function lightenCurrentPage() {
 
 export function adjustColors() {
   initializePlugin().then(() => {
+    startEventListeners()
     const options = { 
       title: 'Adjust Colors...',
       width: 240,
@@ -56,13 +57,23 @@ export function adjustColors() {
 }
 
 async function initializePlugin() {
-  // Set up event listeners
-  on(Events.ON_FILLS_CHANGED, onFillsChanged)
-  on(Events.ON_FILLS_RESET, onFillsReset)
+  setRelaunchButtons()
+  await initializeFills()
+}
 
-  // Set up fills
+function setRelaunchButtons() {
+  if (!('darkenPages' in figma.root.getRelaunchData())) setRelaunchButton(figma.root, 'darkenPages')
+  if (!('lightenPages' in figma.root.getRelaunchData())) setRelaunchButton(figma.root, 'lightenPages')
+}
+
+async function initializeFills() {
   let tempFills = await fillStore.getFills()
   fills = tempFills ? tempFills : DEFAULT_FILLS
+}
+
+function startEventListeners() {
+  on(Events.ON_FILLS_CHANGED, onFillsChanged)
+  on(Events.ON_FILLS_RESET, onFillsReset)
 }
 
 function changeCurrentPageColor(fill: Fill) {
