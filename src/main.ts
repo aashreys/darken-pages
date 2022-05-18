@@ -45,7 +45,7 @@ export function adjustColors() {
     const options = { 
       title: 'Adjust Colors...',
       width: 240,
-      height: 160
+      height: 120
     }
     const data = {
       userFills: fills,
