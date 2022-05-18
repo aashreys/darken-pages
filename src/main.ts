@@ -1,43 +1,94 @@
-import { convertHexColorToRgbColor } from "@create-figma-plugin/utilities"
+import { convertHexColorToRgbColor, emit, on, showUI } from "@create-figma-plugin/utilities"
+import { Events } from "./events"
+import { Fill, FillModel } from "./fill_model"
+import { ClientStorageFillStore } from "./fill_store"
 
-let DARK_HEX = '222222'
-let LIGHT_HEX = 'f5f5f5'
+const DEFAULT_FILLS: FillModel = {
+  darkFill: { hex: '222222', opacity: 100 },
+  lightFill: { hex: 'F5F5F5', opacity: 100 }
+}
+
+const fillStore = new ClientStorageFillStore()
+
+let fills: FillModel
 
 export function darkenAllPages() {
-  changeAllPageColors(DARK_HEX)
-  figma.closePlugin('🎉')
+  initializePlugin().then(() => {
+    changeAllPageColors(fills.darkFill)
+    figma.closePlugin('🎉')
+  }) 
 }
 
 export function lightenAllPages() {
-  changeAllPageColors(LIGHT_HEX)
-  figma.closePlugin('🎉')
+  initializePlugin().then(() => {
+    changeAllPageColors(fills.lightFill)
+    figma.closePlugin('🎉')
+  })
 }
 
 export function darkenCurrentPage() {
-  changeCurrentPageColor(DARK_HEX)
-  figma.closePlugin('🎉')
+  initializePlugin().then(() => {
+    changeCurrentPageColor(fills.darkFill)
+    figma.closePlugin('🎉')
+  })
 }
 
 export function lightenCurrentPage() {
-  changeCurrentPageColor(LIGHT_HEX)
-  figma.closePlugin('🎉')
+  initializePlugin().then(() => {
+    changeCurrentPageColor(fills.lightFill)
+    figma.closePlugin('🎉')
+  })
 }
 
-function changeCurrentPageColor(hexColor: string) {
-  figma.currentPage.backgrounds = [createBackgroundPaint(hexColor)]
+export function adjustColors() {
+  initializePlugin().then(() => {
+    const options = { 
+      title: 'Adjust Colors...',
+      width: 240,
+      height: 160
+    }
+    const data = {
+      userFills: fills,
+      defaultFills: DEFAULT_FILLS
+    }
+    showUI(options, data)
+  })
 }
 
-function changeAllPageColors(hexColor: string) {
-  let backgroundPaint: Paint = createBackgroundPaint(hexColor)
+async function initializePlugin() {
+  // Set up event listeners
+  on(Events.ON_FILLS_CHANGED, onFillsChanged)
+  on(Events.ON_FILLS_RESET, onFillsReset)
+
+  // Set up fills
+  let tempFills = await fillStore.getFills()
+  fills = tempFills ? tempFills : DEFAULT_FILLS
+}
+
+function changeCurrentPageColor(fill: Fill) {
+  figma.currentPage.backgrounds = [createBackgroundPaint(fill)]
+}
+
+function changeAllPageColors(fill: Fill) {
+  let backgroundPaint: Paint = createBackgroundPaint(fill)
   let pages: ReadonlyArray<PageNode> = figma.root.children
   for (let page of pages) {
     page.backgrounds = [backgroundPaint]
   }
 }
 
-function createBackgroundPaint(hexColor: string): Paint {
+function createBackgroundPaint(fill: Fill): Paint {
   return {
     type: 'SOLID',
-    color: convertHexColorToRgbColor(hexColor) as RGB
+    color: convertHexColorToRgbColor(fill.hex) as RGB,
+    opacity: fill.opacity / 100
   }
+}
+
+function onFillsChanged(fills: FillModel) {
+  fillStore.storeFills(fills)
+}
+
+function onFillsReset() {
+  fillStore.clearFills()
 }

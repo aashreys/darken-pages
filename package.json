@@ -1,6 +1,8 @@
 {
   "dependencies": {
-    "@create-figma-plugin/utilities": "^1.9.2"
+    "@create-figma-plugin/ui": "^1.9.2",
+    "@create-figma-plugin/utilities": "^1.9.2",
+    "preact": "^10.7.2"
   },
   "devDependencies": {
     "@create-figma-plugin/build": "^1.9.2",
@@ -35,17 +37,11 @@
       },
       "-",
       {
-        "name": "Darken current page",
+        "name": "Adjust colors...",
+        "ui": "src/adjust_colors_ui.tsx",
         "main": {
           "src": "src/main.ts",
-          "handler": "darkenCurrentPage"
-        }
-      },
-      {
-        "name": "Lighten current page",
-        "main": {
-          "src": "src/main.ts",
-          "handler": "lightenCurrentPage"
+          "handler": "adjustColors"
         }
       }
     ]
