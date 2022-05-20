@@ -72,11 +72,9 @@ async function initializeFills() {
 }
 
 function startEventListeners() {
-  on(Events.ON_FILLS_CHANGED, onFillsChanged)
+  on(Events.ON_FILLS_SET, onFillsSet)
   on(Events.ON_FILLS_RESET, onFillsReset)
-  on(Events.ON_PREVIEW_START, onPreviewStart)
-  on(Events.ON_PREVIEW_UPDATE, onPreviewUpdate)
-  on(Events.ON_PREVIEW_END, onPreviewEnd)
+  on(Events.ON_FILL_PREVIEW, onFillPreview)
 }
 
 function changeCurrentPageColor(fill: Fill) {
@@ -99,23 +97,18 @@ function createBackgroundPaint(fill: Fill): Paint {
   }
 }
 
-function onFillsChanged(fills: FillModel) {
+function onFillsSet(fills: FillModel) {
   fillStore.storeFills(fills)
+  figma.notify('🎉')
 }
 
 function onFillsReset() {
   fillStore.clearFills()
+  changeCurrentPageColor(DEFAULT_FILLS.lightFill)
 }
 
-function onPreviewStart() {
-}
-
-function onPreviewUpdate(fill: Fill) {
+function onFillPreview(fill: Fill) {
   if (isValidHexColor(fill.hex)) {
     changeCurrentPageColor(fill)
   }
-}
-
-function onPreviewEnd() {
-  figma.notify('Page color saved 🎉', {timeout: 1500})
 }

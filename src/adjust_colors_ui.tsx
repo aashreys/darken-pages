@@ -16,37 +16,25 @@ function createFillSettings() {
     function onDarkHexColorChange(event: JSX.TargetedEvent<HTMLInputElement>) {
       const newValue = event.currentTarget.value
       setDarkHexColor(newValue)
-      emitPreviewUpdate(newValue, darkOpacity)
-      saveFills(newValue, darkOpacity, lightHexColor, lightOpacity)
+      previewFill(newValue, darkOpacity)
     }
   
     function onDarkOpacityChange(event: JSX.TargetedEvent<HTMLInputElement>) {
       const newValue = event.currentTarget.value
       setDarkOpacity(newValue)
-      emitPreviewUpdate(darkHexColor, newValue)
-      saveFills(darkHexColor, newValue, lightHexColor, lightOpacity)
+      previewFill(darkHexColor, newValue)
     }
   
     function onLightHexColorChange(event: JSX.TargetedEvent<HTMLInputElement>) {
       const newValue = event.currentTarget.value
       setLightHexColor(newValue)
-      emitPreviewUpdate(newValue, lightOpacity)
-      saveFills(darkHexColor, darkOpacity, newValue, lightOpacity)
+      previewFill(newValue, lightOpacity)
     }
   
     function onLightOpacityChange(event: JSX.TargetedEvent<HTMLInputElement>) {
       const newValue = event.currentTarget.value
       setLightOpacity(newValue)
-      emitPreviewUpdate(lightHexColor, newValue)
-      saveFills(darkHexColor, darkOpacity, lightHexColor, newValue)
-    }
-  
-    function saveFills(darkHexColor: string, darkOpacity: string, lightHexColor: string, lightOpacity: string) {
-      let fills: FillModel = {
-        darkFill: { hex: darkHexColor, opacity: opacityStringToNumber(darkOpacity)},
-        lightFill: { hex: lightHexColor, opacity: opacityStringToNumber(lightOpacity)}
-      }
-      props.onFillsChanged(fills)
+      previewFill(lightHexColor, newValue)
     }
 
     function opacityStringToNumber(opacity: string): number {
@@ -59,19 +47,23 @@ function createFillSettings() {
       setDarkOpacity(props.defaultFills.darkFill.opacity + '%')
       setLightHexColor(props.defaultFills.lightFill.hex)
       setLightOpacity(props.defaultFills.lightFill.opacity + '%')
-      props.onResetClicked()
+      props.onFillsReset()
     }
 
     function onFocusCapture() {
-      emit(Events.ON_PREVIEW_START)
+      
     }
 
     function onBlurCapture() {
-      emit(Events.ON_PREVIEW_END)
+      let fills: FillModel = {
+        darkFill: { hex: darkHexColor, opacity: opacityStringToNumber(darkOpacity)},
+        lightFill: { hex: lightHexColor, opacity: opacityStringToNumber(lightOpacity)}
+      }
+      props.onFillsSet(fills)
     }
 
-    function emitPreviewUpdate(hex: string, opacity: string) {
-      emit(Events.ON_PREVIEW_UPDATE, {
+    function previewFill(hex: string, opacity: string) {
+      props.onFillPreview({
         hex: hex,
         opacity: opacityStringToNumber(opacity)
       })
@@ -115,7 +107,7 @@ function createFillSettings() {
       </div>
 
       <Text 
-      style={'margin-top: 16px; font-size: 12px'} 
+      style={'margin-top: 16px'} 
       onClick={onResetClicked}>
         <a href="#">Reset to default</a>
       </Text>
@@ -129,11 +121,15 @@ export const GlobalFillSettings = createFillSettings()
 
 function Plugin(props: any) {
 
-  function onFillsChanged(fills: FillModel) {
-    emit(Events.ON_FILLS_CHANGED, fills)
+  function onFillPreview(fill: Fill) {
+    emit(Events.ON_FILL_PREVIEW, fill)
   }
 
-  function onResetClicked() {
+  function onFillsSet(fills: FillModel) {
+    emit(Events.ON_FILLS_SET, fills)
+  }
+
+  function onFillsReset() {
     emit(Events.ON_FILLS_RESET)
   }
 
@@ -141,8 +137,9 @@ function Plugin(props: any) {
     <GlobalFillSettings
     fills={props.userFills}
     defaultFills={props.defaultFills}
-    onFillsChanged={onFillsChanged}
-    onResetClicked={onResetClicked} />
+    onFillPreview={onFillPreview}
+    onFillsSet={onFillsSet}
+    onFillsReset={onFillsReset} />
   )
   
 }
