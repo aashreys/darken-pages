@@ -2,7 +2,7 @@ import { render, Text, TextboxColor } from "@create-figma-plugin/ui"
 import { h, JSX } from "preact"
 import { Fill, FillModel } from "./fill_model"
 import { useState } from 'preact/hooks'
-import { emit, ensureMinimumTime } from "@create-figma-plugin/utilities"
+import { emit } from "@create-figma-plugin/utilities"
 import { Events } from "./events"
 
 function createFillSettings() {
@@ -14,7 +14,7 @@ function createFillSettings() {
     const [lightOpacity, setLightOpacity] = useState(props.fills.lightFill.opacity + '%')
   
     function onDarkHexColorChange(event: JSX.TargetedEvent<HTMLInputElement>) {
-      const newValue = event.currentTarget.value
+      const newValue = event.currentTarget.value.toUpperCase()
       setDarkHexColor(newValue)
       previewFill(newValue, darkOpacity)
     }
@@ -26,7 +26,7 @@ function createFillSettings() {
     }
   
     function onLightHexColorChange(event: JSX.TargetedEvent<HTMLInputElement>) {
-      const newValue = event.currentTarget.value
+      const newValue = event.currentTarget.value.toUpperCase()
       setLightHexColor(newValue)
       previewFill(newValue, lightOpacity)
     }
