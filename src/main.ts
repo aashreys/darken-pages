@@ -4,7 +4,7 @@ import { Fill, FillModel } from "./fill_model"
 import { ClientStorageFillStore } from "./fill_store"
 
 const DEFAULT_FILLS: FillModel = {
-  darkFill: { hex: '222222', opacity: 100 },
+  darkFill: { hex: '1E1E1E', opacity: 100 },
   lightFill: { hex: 'F5F5F5', opacity: 100 }
 }
 
