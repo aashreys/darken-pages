@@ -12,15 +12,17 @@ const fillStore = new ClientStorageFillStore()
 
 let fills: FillModel
 
-export function darkenPages() {
+export function darkenAllPages() {
   initializePlugin().then(() => {
+    setAllPagesRelaunchButtons()
     changeAllPageColors(fills.darkFill)
     figma.closePlugin('🎉')
   }) 
 }
 
-export function lightenPages() {
+export function lightenAllPages() {
   initializePlugin().then(() => {
+    setAllPagesRelaunchButtons()
     changeAllPageColors(fills.lightFill)
     figma.closePlugin('🎉')
   })
@@ -28,6 +30,7 @@ export function lightenPages() {
 
 export function darkenCurrentPage() {
   initializePlugin().then(() => {
+    setCurrentPageRelaunchButtons()
     changeCurrentPageColor(fills.darkFill)
     figma.closePlugin('🎉')
   })
@@ -35,6 +38,7 @@ export function darkenCurrentPage() {
 
 export function lightenCurrentPage() {
   initializePlugin().then(() => {
+    setCurrentPageRelaunchButtons()
     changeCurrentPageColor(fills.lightFill)
     figma.closePlugin('🎉')
   })
@@ -57,13 +61,17 @@ export function adjustColors() {
 }
 
 async function initializePlugin() {
-  setRelaunchButtons()
   await initializeFills()
 }
 
-function setRelaunchButtons() {
-  if (!('darkenPages' in figma.root.getRelaunchData())) setRelaunchButton(figma.root, 'darkenPages')
-  if (!('lightenPages' in figma.root.getRelaunchData())) setRelaunchButton(figma.root, 'lightenPages')
+function setCurrentPageRelaunchButtons() {
+  if (!('darkenCurrentPage' in figma.root.getRelaunchData())) setRelaunchButton(figma.root, 'darkenCurrentPage')
+  if (!('lightenCurrentPage' in figma.root.getRelaunchData())) setRelaunchButton(figma.root, 'lightenCurrentPage')
+}
+
+function setAllPagesRelaunchButtons() {
+  if (!('darkenAllPages' in figma.root.getRelaunchData())) setRelaunchButton(figma.root, 'darkenAllPages')
+  if (!('lightenAllPages' in figma.root.getRelaunchData())) setRelaunchButton(figma.root, 'lightenAllPages')
 }
 
 async function initializeFills() {
