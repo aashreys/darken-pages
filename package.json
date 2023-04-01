@@ -59,36 +59,6 @@
           "handler": "adjustColors"
         }
       }
-    ],
-    "relaunchButtons": {
-      "darkenCurrentPage": {
-        "name": "Darken current page",
-        "main": {
-          "src": "src/main.ts",
-          "handler": "darkenCurrentPage"
-        }
-      },
-      "lightenCurrentPage": {
-        "name": "Lighten current page",
-        "main": {
-          "src": "src/main.ts",
-          "handler": "lightenCurrentPage"
-        }
-      },
-      "darkenAllPages": {
-        "name": "Darken all pages",
-        "main": {
-          "src": "src/main.ts",
-          "handler": "darkenAllPages"
-        }
-      },
-      "lightenAllPages": {
-        "name": "Lighten all pages",
-        "main": {
-          "src": "src/main.ts",
-          "handler": "lightenAllPages"
-        }
-      }
-    }
+    ]
   }
 }

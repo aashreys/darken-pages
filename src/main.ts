@@ -1,4 +1,4 @@
-import { convertHexColorToRgbColor, isValidHexColor, on, setRelaunchButton, showUI } from "@create-figma-plugin/utilities"
+import { convertHexColorToRgbColor, isValidHexColor, on, setRelaunchButton, showUI, unsetRelaunchButton } from "@create-figma-plugin/utilities"
 import { Events } from "./events"
 import { Fill, FillModel } from "./fill_model"
 import { ClientStorageFillStore } from "./fill_store"
@@ -14,7 +14,6 @@ let fills: FillModel
 
 export function darkenAllPages() {
   initializePlugin().then(() => {
-    setAllPagesRelaunchButtons()
     changeAllPageColors(fills.darkFill)
     figma.closePlugin('🎉')
   }) 
@@ -22,7 +21,6 @@ export function darkenAllPages() {
 
 export function lightenAllPages() {
   initializePlugin().then(() => {
-    setAllPagesRelaunchButtons()
     changeAllPageColors(fills.lightFill)
     figma.closePlugin('🎉')
   })
@@ -30,7 +28,6 @@ export function lightenAllPages() {
 
 export function darkenCurrentPage() {
   initializePlugin().then(() => {
-    setCurrentPageRelaunchButtons()
     changeCurrentPageColor(fills.darkFill)
     figma.closePlugin('🎉')
   })
@@ -38,7 +35,6 @@ export function darkenCurrentPage() {
 
 export function lightenCurrentPage() {
   initializePlugin().then(() => {
-    setCurrentPageRelaunchButtons()
     changeCurrentPageColor(fills.lightFill)
     figma.closePlugin('🎉')
   })
@@ -62,16 +58,6 @@ export function adjustColors() {
 
 async function initializePlugin() {
   await initializeFills()
-}
-
-function setCurrentPageRelaunchButtons() {
-  if (!('darkenCurrentPage' in figma.root.getRelaunchData())) setRelaunchButton(figma.root, 'darkenCurrentPage')
-  if (!('lightenCurrentPage' in figma.root.getRelaunchData())) setRelaunchButton(figma.root, 'lightenCurrentPage')
-}
-
-function setAllPagesRelaunchButtons() {
-  if (!('darkenAllPages' in figma.root.getRelaunchData())) setRelaunchButton(figma.root, 'darkenAllPages')
-  if (!('lightenAllPages' in figma.root.getRelaunchData())) setRelaunchButton(figma.root, 'lightenAllPages')
 }
 
 async function initializeFills() {
